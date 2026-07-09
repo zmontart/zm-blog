@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brutal Truth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0f0f0f;
+    --white: #fafaf8;
+    --off-white: #f2f0eb;
+    --red: #c0392b;
+    --gray: #6b6b6b;
+    --light-gray: #e8e5df;
+    --serif: 'Playfair Display', Georgia, serif;
+    --body-serif: 'Libre Baskerville', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--body-serif);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ── NAV ── */
+  nav {
+    border-bottom: 2px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    background: var(--white);
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 1.3rem;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .nav-logo span { color: var(--red); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .nav-links a { cursor: pointer; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--red); }
+
+  /* ── ARTICLE LIST ── */
+  #homepage { }
+
+  .article-list {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  .post-item {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--light-gray);
+    cursor: pointer;
+  }
+
+  .post-item:last-child { border-bottom: none; }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 14px;
+  }
+
+  .post-meta .dot { color: var(--light-gray); }
+  .post-meta .date { color: var(--gray); font-weight: 400; letter-spacing: 0.5px; text-transform: none; }
+
+  .post-title {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+    transition: color 0.15s;
+  }
+
+  .post-item:hover .post-title { color: var(--red); }
+  .post-title em { font-style: italic; }
+
+  .post-excerpt {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    max-width: 640px;
+  }
+
+  .read-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--black);
+    border-bottom: 1.5px solid var(--black);
+    padding-bottom: 3px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .post-item:hover .read-link { color: var(--red); border-color: var(--red); }
+  .read-link::after { content: '→'; font-size: 1.1em; }
+
+  /* ── ARTICLE PAGE ── */
+  #article-page { display: none; }
+  #article-page.active { display: block; animation: fadeIn 0.25s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .article-topbar {
+    border-bottom: 1px solid var(--light-gray);
+    padding: 16px 48px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gray);
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color 0.15s;
+  }
+
+  .back-btn:hover { color: var(--red); }
+  .back-btn::before { content: '←'; font-size: 1.1em; }
+
+  .article-header {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 64px 48px 48px;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .article-category {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 18px;
+  }
+
+  .article-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4.5vw, 3.6rem);
+    font-weight: 900;
+    line-height: 1.06;
+    letter-spacing: -1.5px;
+    margin-bottom: 24px;
+  }
+
+  .article-title em { font-style: italic; }
+
+  .article-lead {
+    font-size: 1.15rem;
+    color: #555;
+    line-height: 1.8;
+    font-style: italic;
+    max-width: 600px;
+    margin-bottom: 28px;
+  }
+
+  .article-byline {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    color: var(--gray);
+    letter-spacing: 0.5px;
+  }
+
+  .article-body {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 56px 48px 100px;
+  }
+
+  .article-body p {
+    margin-bottom: 1.65rem;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: #1a1a1a;
+  }
+
+  .article-body h2 {
+    font-family: var(--serif);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 2.5rem 0 1.1rem;
+    letter-spacing: -0.3px;
+  }
+
+  .article-body blockquote {
+    border-left: 3px solid var(--red);
+    margin: 2.5rem 0;
+    padding: 6px 0 6px 28px;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-style: italic;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  .article-body ul {
+    margin: 0 0 1.65rem 1.4rem;
+  }
+
+  .article-body ul li {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 2px solid var(--black);
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+  }
+
+  .footer-logo span { color: var(--red); }
+
+  .footer-note {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    color: var(--gray);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .article-list { padding: 0 20px; }
+    .article-topbar { padding: 14px 20px; }
+    .article-header { padding: 40px 20px 32px; }
+    .article-body { padding: 36px 20px 72px; }
+    footer { padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HOMEPAGE -->
+<div id="homepage">
+  <nav>
+    <div class="nav-logo" onclick="showHomepage()">Brutal<span>.</span>Truth</div>
+    <ul class="nav-links">
+      <li><a onclick="filterCategory('Life')">Life</a></li>
+      <li><a onclick="filterCategory('Relationships')">Relationships</a></li>
+      <li><a onclick="filterCategory('Psychology')">Psychology</a></li>
+      <li><a onclick="filterCategory('Culture')">Culture</a></li>
+    </ul>
+  </nav>
+
+  <div class="article-list" id="article-list">
+    <!-- Injected by JS -->
+  </div>
+
+  <footer>
+    <div class="footer-logo">Brutal<span>.</span>Truth</div>
+    <div class="footer-note">Updated weekly. No fluff.</div>
+  </footer>
+</div>
+
+<!-- ARTICLE PAGE -->
+<div id="article-page">
+  <nav>
+    <div class="nav-logo" onclick="showHomepage()">Brutal<span>.</span>Truth</div>
+    <ul class="nav-links">
+      <li><a onclick="filterCategory('Life')">Life</a></li>
+      <li><a onclick="filterCategory('Relationships')">Relationships</a></li>
+      <li><a onclick="filterCategory('Psychology')">Psychology</a></li>
+      <li><a onclick="filterCategory('Culture')">Culture</a></li>
+    </ul>
+  </nav>
+
+  <div class="article-topbar">
+    <button class="back-btn" onclick="showHomepage()">All essays</button>
+  </div>
+
+  <div class="article-header">
+    <div class="article-category" id="a-category"></div>
+    <h1 class="article-title" id="a-title"></h1>
+    <p class="article-lead" id="a-lead"></p>
+    <div class="article-byline" id="a-byline"></div>
+  </div>
+
+  <div class="article-body" id="a-body"></div>
+</div>
+
+<script>
+const posts = [
+  {
+    id: 'happy',
+    category: 'Life',
+    date: 'Nov 12, 2025',
+    readTime: '12 min',
+    title: 'Stop Trying to Be <em>Fucking Happy</em>',
+    excerpt: 'The relentless pursuit of good vibes is making you miserable. There\'s a cruel irony at the heart of modern self-help culture, and nobody wants to say it out loud.',
+    lead: 'The relentless pursuit of good vibes is making you miserable. Nobody wants to say it out loud, but the evidence is everywhere.',
+    body: `
+      <p>Somewhere along the way, we collectively decided that the purpose of a human life is to feel good as much as possible. And I get it. Feeling good is... good. But somewhere in the conversion of that simple preference into a cultural obsession, something went very wrong.</p>
+      <p>We now live in a world of five-step morning routines, gratitude journals, dopamine menus, and apps that remind you to breathe. Billion-dollar industries exist solely to sell you the experience of your own contentment. And yet, by every measurable metric, we are the most anxious, depressed, and dissatisfied generation of humans to have ever had the audacity to exist.</p>
+      <h2>The Feedback Loop Nobody Talks About</h2>
+      <p>Here's the thing about chasing happiness: the very act of chasing it presupposes that you don't have it. The constant monitoring of your own emotional state — the relentless check-ins, the mood tracking, the <em>am I happy enough right now?</em> — is itself a recipe for dissatisfaction.</p>
+      <blockquote>"The more you try to grasp at happiness directly, the more it recedes from you. Like trying to see your own eye — you can only catch it in a reflection."</blockquote>
+      <p>Psychologists call this the "paradox of hedonism." The direct pursuit of pleasure often undermines itself. You end up not with more joy but with an elaborate scaffolding of coping strategies around a growing sense that something is fundamentally missing.</p>
+      <h2>What Actually Works (Spoiler: It's Boring)</h2>
+      <p>The research on human well-being is pretty consistent, and pretty unsexy. The things that actually correlate with reported life satisfaction are:</p>
+      <ul>
+        <li>Meaningful relationships — not numerous ones, meaningful ones</li>
+        <li>A sense that your work and actions matter to something beyond yourself</li>
+        <li>A degree of autonomy and mastery over your circumstances</li>
+        <li>The absence of chronic stress, not the presence of chronic positivity</li>
+      </ul>
+      <p>Notice that "optimizing your morning routine" is not on the list. Neither is "manifesting your best self." These are, to put it charitably, decorative. They feel like doing something while not actually doing anything.</p>
+      <p>You are allowed to feel bad. You are allowed to have weeks where nothing quite clicks. This is not a malfunction. This is the texture of an actual life.</p>
+    `
+  },
+  {
+    id: 'lazy',
+    category: 'Psychology',
+    date: 'Oct 28, 2025',
+    readTime: '7 min',
+    title: 'Why You\'re Not Actually <em>Lazy</em>',
+    excerpt: 'Procrastination isn\'t a character flaw — it\'s emotional self-defense. Understanding the difference could change everything about how you work.',
+    lead: 'Procrastination isn\'t a character flaw — it\'s emotional self-defense. Understanding the difference changes everything.',
+    body: `
+      <p>"You're just lazy." It's one of the cruellest — and most useless — things you can tell yourself. It's also almost certainly inaccurate.</p>
+      <p>Decades of research on procrastination have arrived at a pretty unambiguous conclusion: procrastination is primarily an <em>emotional regulation</em> problem, not a time management problem. When you avoid a task, you're not avoiding the task itself — you're avoiding the feelings the task provokes.</p>
+      <h2>What You're Actually Avoiding</h2>
+      <p>Usually it's one of a fairly small set of emotional experiences: fear of failure, fear of judgment, boredom, anxiety about the stakes, or a deep sense of inadequacy that gets triggered the moment you open the project file.</p>
+      <blockquote>"Procrastination is the emotion-management strategy of a person who hasn't yet developed better emotion-management strategies."</blockquote>
+      <p>This means that telling yourself to "just do it" is roughly as effective as telling someone with a broken leg to "walk it off." You're prescribing action to a problem that is fundamentally about feelings.</p>
+      <h2>What Actually Helps</h2>
+      <p>Self-compassion, counterintuitively, is one of the most effective interventions — people who are harder on themselves about procrastinating actually procrastinate <em>more</em>, not less. The self-criticism becomes its own form of emotional distress to avoid.</p>
+      <p>What also helps: making the task emotionally safer. Breaking it down until the first step is so small that it carries no emotional charge. Building environments where starting is easier than not starting. None of this is magic. But at least it's aimed at the actual problem.</p>
+    `
+  },
+  {
+    id: 'comfort',
+    category: 'Life',
+    date: 'Oct 15, 2025',
+    readTime: '10 min',
+    title: 'Comfort Is <em>Killing</em> You Slowly',
+    excerpt: 'Every time you choose the easier path, you\'re making a tiny withdrawal from the account of who you could be. Eventually, the balance hits zero.',
+    lead: 'Every time you choose the easier path, you\'re making a tiny withdrawal from the account of who you could be.',
+    body: `
+      <p>We have never lived more comfortably. We have also, by many measures, never been more psychologically adrift. I don't think these two facts are unrelated.</p>
+      <p>There is a version of comfort that is genuinely good — the comfort of safety, of warmth, of belonging. And then there is the comfort of avoidance: the Netflix queue you scroll instead of starting the creative project, the conversation you keep postponing, the risk you'll take "someday."</p>
+      <h2>The Atrophy Nobody Mentions</h2>
+      <p>Muscles atrophy when they're not used. The same logic applies to your psychological capacities — your tolerance for difficulty, your willingness to sit with discomfort, your ability to act in the presence of uncertainty.</p>
+      <blockquote>"The human organism is built to struggle. Remove all friction, and you remove the mechanism by which character gets built."</blockquote>
+      <p>This isn't a call to embrace misery. It's a call to be deliberate about which discomforts you're willing to take on — and to recognize that the deliberate choice of voluntary difficulty is one of the most powerful levers available to you.</p>
+      <h2>Voluntary Difficulty as a Practice</h2>
+      <p>Hard workouts, difficult conversations, ambitious creative work — these things have in common that they require you to show up when you don't feel like it. And that's precisely their value. Not the miles themselves, but the daily practice of overriding the comfort instinct.</p>
+      <p>The goal isn't discomfort for its own sake. The goal is to remain someone who can do hard things — because life will require it of you whether you've been practicing or not.</p>
+    `
+  },
+  {
+    id: 'relationships',
+    category: 'Relationships',
+    date: 'Sep 30, 2025',
+    readTime: '11 min',
+    title: 'You Don\'t Need to Find <em>Your Person</em>',
+    excerpt: 'The "soulmate" myth has caused more heartbreak than any breakup ever could. Great relationships aren\'t found — they\'re built, badly, and then rebuilt again.',
+    lead: 'The soulmate myth has caused more heartbreak than any breakup ever could. Great relationships aren\'t found — they\'re built.',
+    body: `
+      <p>The most destructive idea in modern romance isn't anything to do with dating apps or hookup culture. It's the deeply embedded belief that somewhere out there is a person who is <em>right</em> for you — and that finding them will make everything click into place.</p>
+      <p>It won't. And the belief that it should is precisely what makes relationships so hard.</p>
+      <h2>The Problem with "The One"</h2>
+      <p>When you believe in soulmates, every relationship flaw becomes a sign you picked wrong. Every rough patch is evidence that you haven't found the right person yet. You spend the relationship with one eye on the exit, waiting for confirmation that this person is or isn't "it."</p>
+      <blockquote>"The idea of 'the one' outsources all the work of a relationship onto fate. It's the laziest possible theory of love."</blockquote>
+      <p>Great relationships are not discovered. They are constructed — slowly, awkwardly, through hundreds of small choices to show up, to be honest, to repair after conflict, to grow in the same direction even when it's uncomfortable.</p>
+      <h2>What Love Actually Is</h2>
+      <p>Love is not a feeling you have. It's a practice you maintain. The feeling comes and goes — that's just neuroscience. The practice is what determines whether you still like each other in a decade.</p>
+      <p>The good news: this means you have far more agency than the soulmate narrative grants you. The bad news: it also means there's nowhere to hide. The relationship is exactly as good as the work both of you are willing to put in.</p>
+    `
+  },
+  {
+    id: 'advice',
+    category: 'Culture',
+    date: 'Sep 10, 2025',
+    readTime: '9 min',
+    title: 'Most Self-Help Is a <em>Scam</em>',
+    excerpt: 'Books that promise to "rewire your brain in 30 days" are selling you a fantasy. Here\'s what actually changes people — and it\'s disappointingly boring.',
+    lead: 'Books that promise to rewire your brain in 30 days are selling a fantasy. Here\'s what actually changes people.',
+    body: `
+      <p>I've read a lot of self-help books. More than I should probably admit. And I've noticed something: the better a self-help book is at marketing itself, the less useful it tends to be in practice.</p>
+      <p>The most successful books in the genre share a common structure: identify a relatable problem, promise a dramatic transformation, deliver a framework with an acronym, pad to 250 pages. The reader feels inspired for about a week, then returns to their default settings. Repeat annually.</p>
+      <h2>Why the Industry Doesn't Want You to Change</h2>
+      <p>A person who genuinely changes their life doesn't need to buy next year's book. The self-help industry, like most industries, is optimized for repeat customers — which means it's subtly optimized against the kind of deep, lasting change it promises.</p>
+      <blockquote>"The most profitable self-help book is one that makes you feel like you're working on yourself without requiring you to actually do anything differently."</blockquote>
+      <p>This isn't a conspiracy — it's just incentives. But it's worth being clear-eyed about.</p>
+      <h2>What Actually Changes People</h2>
+      <p>The research on behaviour change is pretty clear. People change through: repeated action in new environments, genuine social accountability, identity-level reframing ("I am someone who..."), and — most of all — actual consequences. Pain, loss, failure, or the clear sight of what staying the same will cost.</p>
+      <p>None of these things can be delivered in a book. A book can point you toward them. That's its limit — and it's a real one.</p>
+    `
+  }
+];
+
+let activeFilter = null;
+
+function renderList(filter) {
+  const container = document.getElementById('article-list');
+  const filtered = filter ? posts.filter(p => p.category === filter) : posts;
+  container.innerHTML = filtered.map(p => `
+    <div class="post-item" onclick="showArticle('${p.id}')">
+      <div class="post-meta">
+        <span>${p.category}</span>
+        <span class="dot">·</span>
+        <span class="date">${p.date} &nbsp;·&nbsp; ${p.readTime} read</span>
+      </div>
+      <h2 class="post-title">${p.title}</h2>
+      <p class="post-excerpt">${p.excerpt}</p>
+      <span class="read-link">Read</span>
+    </div>
+  `).join('');
+}
+
+function filterCategory(cat) {
+  activeFilter = activeFilter === cat ? null : cat;
+  renderList(activeFilter);
+  showHomepage();
+}
+
+function showArticle(id) {
+  const post = posts.find(p => p.id === id);
+  if (!post) return;
+  document.getElementById('a-category').textContent = post.category;
+  document.getElementById('a-title').innerHTML = post.title;
+  document.getElementById('a-lead').textContent = post.lead;
+  document.getElementById('a-byline').textContent = `${post.date}  ·  ${post.readTime} read`;
+  document.getElementById('a-body').innerHTML = post.body;
+  document.getElementById('homepage').style.display = 'none';
+  const ap = document.getElementById('article-page');
+  ap.style.display = 'block';
+  ap.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showHomepage() {
+  document.getElementById('homepage').style.display = '';
+  const ap = document.getElementById('article-page');
+  ap.style.display = 'none';
+  ap.classList.remove('active');
+  window.scrollTo(0, 0);
+}
+
+renderList();
+</script>
+</body>
+</html>
